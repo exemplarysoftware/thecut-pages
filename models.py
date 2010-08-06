@@ -81,12 +81,12 @@ class AbstractPage(models.Model):
         Convenience method/property for compatibility with 'ctas' app.
         
         """
-        call_to_actions = None
+        ctas = None
         if AttachedCallToAction:
             content_type = ContentType.objects.get_for_model(self)
-            call_to_actions = AttachedCallToAction.objects.filter(
+            ctas = AttachedCallToAction.objects.active().filter(
                 content_type=content_type, object_id=self.id)
-        return call_to_actions
+        return ctas
 
 
 class Page(AbstractPage):
@@ -102,5 +102,5 @@ class Page(AbstractPage):
         unique_together = ['url', 'site']
     
     def get_absolute_url(self):
-        return reverse('page_detail', kwargs={'url': self.url})
+        return self.url
 
