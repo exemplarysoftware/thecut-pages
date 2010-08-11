@@ -37,8 +37,8 @@ if 'ctas' in settings.INSTALLED_APPS:
 class PageAdmin(admin.ModelAdmin):
     date_hierarchy = 'publish_at'
     inlines = PAGE_INLINES
-    list_display = ['title', 'url', 'publish_at', 'is_enabled']
-    #list_filter = ['is_enabled']
+    list_display = ['title', 'url', 'publish_at', 'is_enabled', 'site']
+    list_filter = ['site']
     prepopulated_fields = {'url': ['title']}
     search_fields = ['title', 'headline', 'url']
     
