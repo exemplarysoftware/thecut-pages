@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.db import models
-from pages.managers import ActiveManager
+from pages.managers import PageManager
 
 AttachedCallToAction = None
 if 'ctas' in settings.INSTALLED_APPS:
@@ -25,11 +25,12 @@ class AbstractPage(models.Model):
     title = models.CharField(max_length=200)
     headline = models.CharField(max_length=200, null=True, blank=True)
     content = models.TextField(null=True, blank=True)
-    #media = models.ForeignKey('media.MediaSet', null=True, blank=True)
     
     publish_at = models.DateTimeField('Publish Date & Time')
     is_enabled = models.BooleanField(default=False,
         help_text='Is this page viewable on the website?')
+    is_indexable = models.BooleanField(default=True,
+        help_text='Should this page be indexed by search engines?')
     
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     created_by = models.ForeignKey(User, editable=False,
@@ -39,7 +40,7 @@ class AbstractPage(models.Model):
     updated_by = models.ForeignKey(User, editable=False,
         related_name='%(class)s_updated_by_user')
     
-    objects = ActiveManager()
+    objects = PageManager()
     
     class Meta:
         abstract = True

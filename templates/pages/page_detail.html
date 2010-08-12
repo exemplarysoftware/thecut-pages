@@ -2,6 +2,10 @@
 
 {% block title %}{{ page.title }}{% endblock %}
 
+{% block extra_head %}
+{% if not page.is_indexable %}<meta name="robots" content="noindex" />{% endif %}
+{% endblock %}
+
 {% block content %}
   
   <h1>{{ page.heading }}</h1>

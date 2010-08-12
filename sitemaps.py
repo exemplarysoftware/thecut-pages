@@ -7,7 +7,7 @@ class PageSitemap(Sitemap):
     """Sitemaps.org XML sitemap."""
     def items(self):
         site = Site.objects.get_current()
-        return Page.objects.active().filter(site=site)
+        return Page.objects.sitemaps().filter(site=site)
     
     def lastmod(self, obj):
         return obj.updated_at
