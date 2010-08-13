@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.contenttypes.generic import GenericTabularInline
+from django.contrib.contenttypes.generic import GenericStackedInline, GenericTabularInline
 from pages.models import Page
 
 
@@ -12,7 +12,7 @@ if 'media' in settings.INSTALLED_APPS:
     except:
         pass
     else:
-        class PageMediaInline(GenericTabularInline):
+        class PageMediaInline(GenericStackedInline):
             extra = 1
             max_num = 1
             model = MediaSet
