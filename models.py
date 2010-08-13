@@ -26,14 +26,15 @@ class AbstractPage(models.Model):
     headline = models.CharField(max_length=200, null=True, blank=True)
     content = models.TextField(null=True, blank=True)
     
-    publish_at = models.DateTimeField('Publish Date & Time')
-    is_enabled = models.BooleanField(default=False,
-        help_text='Is this page viewable on the website?')
-    is_indexable = models.BooleanField(default=True,
+    publish_at = models.DateTimeField('publish date & time',
+        help_text='This page will only be viewable on the website \
+            once this date and time has past.')
+    is_enabled = models.BooleanField('enabled', default=False)
+    is_indexable = models.BooleanField('indexable', default=True,
         help_text='Should this page be indexed by search engines?')
     meta_description = models.CharField(max_length=200, null=True,
         blank=True, help_text='Short description of this page \
-            for use by search engines')
+            for use by search engines.')
     
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     created_by = models.ForeignKey(User, editable=False,

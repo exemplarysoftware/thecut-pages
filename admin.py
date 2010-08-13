@@ -30,6 +30,7 @@ if 'ctas' in settings.INSTALLED_APPS:
             extra = 1
             max_num = 1
             model = AttachedCallToAction
+            exclude = ['order']
         
         PAGE_INLINES += [PageCallToActionInline]
 
