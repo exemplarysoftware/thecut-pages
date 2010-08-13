@@ -14,6 +14,7 @@ if 'media' in settings.INSTALLED_APPS:
     else:
         class PageMediaInline(GenericStackedInline):
             extra = 1
+            filter_horizontal = ['photos', 'galleries', 'documents']
             max_num = 1
             model = MediaSet
         
