@@ -33,8 +33,8 @@ class AbstractPage(models.Model):
     is_indexable = models.BooleanField('indexable', default=True,
         help_text='Should this page be indexed by search engines?')
     meta_description = models.CharField(max_length=200, null=True,
-        blank=True, help_text='Short description of this page \
-            for use by search engines.')
+        blank=True, help_text='Optional short description of this \
+            page for use by search engines.')
     
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     created_by = models.ForeignKey(User, editable=False,
