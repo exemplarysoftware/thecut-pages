@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.contenttypes.generic import GenericStackedInline, GenericTabularInline
+from django.forms import ModelForm
 from pages.models import Page
 
 
@@ -8,13 +9,22 @@ PAGE_INLINES = []
 
 if 'media' in settings.INSTALLED_APPS:
     try:
+        from media.fields import ImageMultipleChoiceField
         from media.models import MediaSet
-    except:
+        from photologue.models import Photo
+    except ImportError:
         pass
     else:
+        class MediaSetForm(ModelForm):
+            photos = ImageMultipleChoiceField(Photo.objects.all(),
+                required=False)
+            class Meta:
+                model = MediaSet
+        
         class PageMediaInline(GenericStackedInline):
             extra = 1
             filter_horizontal = ['photos', 'galleries', 'documents']
+            form = MediaSetForm
             max_num = 1
             model = MediaSet
         
@@ -24,7 +34,7 @@ if 'media' in settings.INSTALLED_APPS:
 if 'ctas' in settings.INSTALLED_APPS:
     try:
         from ctas.models import AttachedCallToAction
-    except:
+    except ImportError:
         pass
     else:
         class PageCallToActionInline(GenericTabularInline):
