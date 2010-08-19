@@ -4,10 +4,16 @@ from django.core.serializers import serialize
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render_to_response
 from django.template import RequestContext
-from django.views.decorators.csrf import csrf_protect
 from django.views.generic.list_detail import object_list
 from pages.forms import PageForm
 from pages.models import Page
+
+
+try:
+    from django.views.decorators.csrf import csrf_protect
+except ImportError:
+    def csrf_protect(obj):
+        return obj
 
 
 DEFAULT_TEMPLATE = getattr(settings, 'PAGES_DEFAULT_TEMPLATE',
