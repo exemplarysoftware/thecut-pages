@@ -4,6 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.db import models
 from pages.managers import PageManager
+from pages.utils import generate_unique_url
+
 
 AttachedCallToAction = None
 if 'ctas' in settings.INSTALLED_APPS:
@@ -108,4 +110,9 @@ class Page(AbstractPage):
     
     def get_absolute_url(self):
         return self.url
+    
+    def save(self, *args, **kwargs):
+        if not self.url:
+            self.url = generate_unique_url(self.title, self.__class__)
+        super(Page, self).save(*args, **kwargs)
 
