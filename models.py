@@ -58,7 +58,8 @@ class AbstractPage(models.Model):
    
     @property
     def is_active(self):
-        return self in Page.objects.active().filter(pk=self.pk)
+        return self in self.__class__.objects.active().filter(
+            pk=self.pk)
     
     @property
     def heading(self):
