@@ -31,7 +31,7 @@ class AbstractPage(models.Model):
     publish_at = models.DateTimeField('publish date & time',
         help_text='This page will only be viewable on the website \
             if it is enabled, and this date and time has past.')
-    is_enabled = models.BooleanField('enabled', default=False)
+    is_enabled = models.BooleanField('enabled', default=True)
     is_indexable = models.BooleanField('indexable', default=True,
         help_text='Should this page be indexed by search engines?')
     meta_description = models.CharField(max_length=200, null=True,
