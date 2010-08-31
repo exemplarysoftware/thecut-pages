@@ -9,15 +9,20 @@ PAGE_INLINES = []
 
 if 'media' in settings.INSTALLED_APPS:
     try:
-        from media.fields import ImageMultipleChoiceField
-        from media.models import MediaSet
-        from photologue.models import Photo
+        from media.fields import DocumentMultipleChoiceField, GalleryMultipleChoiceField, ImageMultipleChoiceField
+        from media.models import Document, MediaSet
+        from photologue.models import Photo, Gallery
     except ImportError:
         pass
     else:
         class MediaSetForm(ModelForm):
             photos = ImageMultipleChoiceField(Photo.objects.all(),
                 required=False)
+            galleries = GalleryMultipleChoiceField(Gallery.objects.all(),
+                required=False)
+            documents = DocumentMultipleChoiceField(Document.objects.all(),
+                required=False)
+            
             class Meta:
                 model = MediaSet
         
