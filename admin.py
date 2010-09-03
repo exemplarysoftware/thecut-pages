@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.contenttypes.generic import GenericStackedInline, GenericTabularInline
-from django.forms import ModelForm
 from pages.models import Page
 
 
@@ -9,26 +8,14 @@ PAGE_INLINES = []
 
 if 'media' in settings.INSTALLED_APPS:
     try:
-        from media.fields import DocumentMultipleChoiceField, GalleryMultipleChoiceField, ImageMultipleChoiceField
-        from media.models import Document, MediaSet
-        from photologue.models import Photo, Gallery
+        from media.forms import MediaSetForm
+        from media.models import MediaSet
     except ImportError:
         pass
     else:
-        class MediaSetForm(ModelForm):
-            photos = ImageMultipleChoiceField(Photo.objects.all(),
-                required=False)
-            galleries = GalleryMultipleChoiceField(Gallery.objects.all(),
-                required=False)
-            documents = DocumentMultipleChoiceField(Document.objects.all(),
-                required=False)
-            
-            class Meta:
-                model = MediaSet
-        
         class PageMediaInline(GenericStackedInline):
             extra = 1
-            filter_horizontal = ['photos', 'galleries', 'documents']
+            filter_horizontal = ['galleries', 'documents']
             form = MediaSetForm
             max_num = 1
             model = MediaSet
@@ -65,3 +52,4 @@ class PageAdmin(admin.ModelAdmin):
         obj.save()
 
 admin.site.register(Page, PageAdmin)
+
