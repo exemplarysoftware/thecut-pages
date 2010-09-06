@@ -100,7 +100,7 @@ class AbstractPage(models.Model):
 class Page(AbstractPage):
     """Generic page."""
     site = models.ForeignKey(Site)
-    url = models.CharField(max_length=100, db_index=True, unique=True,
+    url = models.CharField(max_length=100, db_index=True,
         help_text='Example: /my-page')
     
     template = models.CharField(max_length=100, blank=True,
