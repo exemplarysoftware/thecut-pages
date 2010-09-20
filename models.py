@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.db import models
+from pages.decorators import attach_mediaset
 from pages.managers import PageManager
 from pages.utils import generate_unique_url
 
@@ -14,14 +15,8 @@ if 'ctas' in settings.INSTALLED_APPS:
     except ImportError:
         pass
 
-MediaSet = None
-if 'media' in settings.INSTALLED_APPS:
-    try:
-        from media.models import MediaSet
-    except ImportError:
-        pass
 
-
+@attach_mediaset
 class AbstractPage(models.Model):
     """Abstract page model."""
     title = models.CharField(max_length=200)
@@ -64,23 +59,6 @@ class AbstractPage(models.Model):
     @property
     def heading(self):
         return self.headline and self.headline or self.title
-    
-    @property
-    def media(self):
-        """Returns attached media set object.
-        
-        Convenience method/property for compatibility with 'media' app.
-        
-        """
-        media = None
-        if MediaSet:
-            content_type = ContentType.objects.get_for_model(self)
-            try:
-                media = MediaSet.objects.get(content_type=content_type,
-                object_id=self.id)
-            except MediaSet.DoesNotExist:
-                pass
-        return media
     
     @property
     def call_to_actions(self):
