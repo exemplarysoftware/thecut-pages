@@ -8,19 +8,11 @@ PAGE_INLINES = []
 
 if 'media' in settings.INSTALLED_APPS:
     try:
-        from media.forms import MediaSetForm
-        from media.models import MediaSet
+        from media.admin import MediaSetInline
     except ImportError:
         pass
     else:
-        class PageMediaInline(GenericStackedInline):
-            extra = 1
-            filter_horizontal = ['galleries', 'documents']
-            form = MediaSetForm
-            max_num = 1
-            model = MediaSet
-        
-        PAGE_INLINES += [PageMediaInline]
+        PAGE_INLINES += [MediaSetInline]
 
 
 if 'ctas' in settings.INSTALLED_APPS:
