@@ -1,16 +1,10 @@
-from datetime import datetime
 from django.db.models import Manager
 
 
-class PageManager(Manager):
-    def active(self):
-        """Return active (enabled, published) objects."""
-        queryset = self.get_query_set()
-        return queryset.filter(is_enabled=True).filter(
-            publish_at__lte=datetime.now())
-    
-    def sitemaps(self):
-        """Return active, indexable objects for inclusion in sitemaps."""
-        queryset = self.active()
-        return queryset.filter(is_indexable=True)
+class QuerySetManager(Manager):
+    # http://djangosnippets.org/snippets/734/
+    def get_query_set(self):
+        return self.model.QuerySet(self.model)
+    def __getattr__(self, attr, *args):
+        return getattr(self.get_query_set(), attr, *args)
 

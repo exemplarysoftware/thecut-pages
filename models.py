@@ -1,11 +1,12 @@
+from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.db import models
 from pages.decorators import attach_mediaset
-from pages.managers import PageManager
-from pages.utils import generate_unique_url
+from pages.managers import QuerySetManager
+from pages.utils import generate_unique_slug
 
 
 AttachedCallToAction = None
@@ -41,12 +42,30 @@ class AbstractPage(models.Model):
     updated_by = models.ForeignKey(User, editable=False,
         related_name='%(class)s_updated_by_user')
     
-    objects = PageManager()
+    objects = QuerySetManager()
     
     class Meta:
         abstract = True
         get_latest_by = 'publish_at'
         ordering = ['title']
+    
+    class QuerySet(models.query.QuerySet):
+        def active(self):
+            """Return active (enabled, published) objects."""
+            return self.filter(is_enabled=True).filter(
+                publish_at__lte=datetime.now())
+        
+        #def featured(self):
+        #    """Return featured objects."""
+        #    return self.filter(is_featured=True)
+        
+        def indexable(self):
+            """Return active, indexable objects."""
+            return self.active().filter(is_indexable=True)
+        
+        def sitemaps(self):
+            """Deprecated - user indexable() method instead."""
+            return self.indexable()
     
     def __unicode__(self):
         return self.title
@@ -84,6 +103,8 @@ class Page(AbstractPage):
     template = models.CharField(max_length=100, blank=True,
         help_text='Example: "pages/contact_page.html".')    
     
+    objects = QuerySetManager()
+    
     class Meta(AbstractPage.Meta):
         unique_together = ['url', 'site']
     
@@ -92,6 +113,7 @@ class Page(AbstractPage):
     
     def save(self, *args, **kwargs):
         if not self.url:
-            self.url = generate_unique_url(self.title, self.__class__)
+            self.url = generate_unique_slug(self.title, Page,
+                queryset=Page.objects.filter(site=self.site))
         super(Page, self).save(*args, **kwargs)
 
