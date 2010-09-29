@@ -22,7 +22,7 @@ def page(request, url):
 
 def page_detail(request, url, extra_context=None):
     page = get_object_or_404(Page.objects.current_site().active(),
-        url=url, site=site)
+        url=url)
     context = extra_context or {}
     context.update({'page': page})
     
