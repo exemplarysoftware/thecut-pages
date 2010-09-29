@@ -108,6 +108,12 @@ class Page(AbstractPage):
     class Meta(AbstractPage.Meta):
         unique_together = ['url', 'site']
     
+    class QuerySet(AbstractPage.QuerySet):
+        def current_site(self):
+            """Return objects for the current site."""
+            site = Site.objects.get_current()
+            return self.filter(site=site)
+    
     def get_absolute_url(self):
         return self.url
     
