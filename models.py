@@ -5,8 +5,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.db import models
 from pages.decorators import attach_mediaset
-from pages.managers import QuerySetManager
-from pages.utils import generate_unique_slug
+from pages.utils import generate_unique_url
+from thecut.managers import QuerySetManager
+from thecut.models import AbstractSiteResource
 
 
 AttachedCallToAction = None
@@ -18,66 +19,27 @@ if 'ctas' in settings.INSTALLED_APPS:
 
 
 @attach_mediaset
-class AbstractPage(models.Model):
-    """Abstract page model."""
-    title = models.CharField(max_length=200)
-    headline = models.CharField(max_length=200, null=True, blank=True)
-    content = models.TextField(null=True, blank=True)
+class Page(AbstractSiteResource):
+    """Generic page."""
+    url = models.CharField(max_length=100, db_index=True,
+        help_text='Example: /my-page')
     
-    publish_at = models.DateTimeField('publish date & time',
-        help_text='This page will only be viewable on the website \
-            if it is enabled, and this date and time has past.')
-    is_enabled = models.BooleanField('enabled', default=True)
-    is_indexable = models.BooleanField('indexable', default=True,
-        help_text='Should this page be indexed by search engines?')
-    meta_description = models.CharField(max_length=200, null=True,
-        blank=True, help_text='Optional short description of this \
-            page for use by search engines.')
-    
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    created_by = models.ForeignKey(User, editable=False,
-        related_name='%(class)s_created_by_user')
-    
-    updated_at = models.DateTimeField(auto_now=True, editable=False)
-    updated_by = models.ForeignKey(User, editable=False,
-        related_name='%(class)s_updated_by_user')
+    template = models.CharField(max_length=100, blank=True,
+        help_text='Example: "pages/contact_page.html".')    
     
     objects = QuerySetManager()
     
-    class Meta:
-        abstract = True
-        get_latest_by = 'publish_at'
-        ordering = ['title']
+    class Meta(AbstractSiteResource.Meta):
+        unique_together = ['url', 'site']
     
-    class QuerySet(models.query.QuerySet):
-        def active(self):
-            """Return active (enabled, published) objects."""
-            return self.filter(is_enabled=True).filter(
-                publish_at__lte=datetime.now())
-        
-        #def featured(self):
-        #    """Return featured objects."""
-        #    return self.filter(is_featured=True)
-        
-        def indexable(self):
-            """Return active, indexable objects."""
-            return self.active().filter(is_indexable=True)
-        
-        def sitemaps(self):
-            """Deprecated - user indexable() method instead."""
-            return self.indexable()
+    def get_absolute_url(self):
+        return self.url
     
-    def __unicode__(self):
-        return self.title
-   
-    @property
-    def is_active(self):
-        return self in self.__class__.objects.active().filter(
-            pk=self.pk)
-    
-    @property
-    def heading(self):
-        return self.headline and self.headline or self.title
+    def save(self, *args, **kwargs):
+        if not self.url:
+            self.url = generate_unique_url(self.title, Page,
+                queryset=Page.objects.filter(site=self.site))
+        super(Page, self).save(*args, **kwargs)
     
     @property
     def call_to_actions(self):
@@ -92,34 +54,4 @@ class AbstractPage(models.Model):
             ctas = AttachedCallToAction.objects.active().filter(
                 content_type=content_type, object_id=self.id)
         return ctas
-
-
-class Page(AbstractPage):
-    """Generic page."""
-    site = models.ForeignKey(Site)
-    url = models.CharField(max_length=100, db_index=True,
-        help_text='Example: /my-page')
-    
-    template = models.CharField(max_length=100, blank=True,
-        help_text='Example: "pages/contact_page.html".')    
-    
-    objects = QuerySetManager()
-    
-    class Meta(AbstractPage.Meta):
-        unique_together = ['url', 'site']
-    
-    class QuerySet(AbstractPage.QuerySet):
-        def current_site(self):
-            """Return objects for the current site."""
-            site = Site.objects.get_current()
-            return self.filter(site=site)
-    
-    def get_absolute_url(self):
-        return self.url
-    
-    def save(self, *args, **kwargs):
-        if not self.url:
-            self.url = generate_unique_slug(self.title, Page,
-                queryset=Page.objects.filter(site=self.site))
-        super(Page, self).save(*args, **kwargs)
 
