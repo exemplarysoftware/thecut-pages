@@ -5,9 +5,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.db import models
 from pages.decorators import attach_mediaset
+from pages.utils import generate_unique_url
 from thecut.managers import QuerySetManager
 from thecut.models import AbstractSiteResource
-from thecut.utils import generate_unique_slug
 
 
 AttachedCallToAction = None
@@ -37,7 +37,7 @@ class Page(AbstractSiteResource):
     
     def save(self, *args, **kwargs):
         if not self.url:
-            self.url = generate_unique_slug(self.title, Page,
+            self.url = generate_unique_url(self.title, Page,
                 queryset=Page.objects.filter(site=self.site))
         super(Page, self).save(*args, **kwargs)
     
