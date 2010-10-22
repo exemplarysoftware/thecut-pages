@@ -1,5 +1,5 @@
 from django.contrib.sitemaps import Sitemap
-from pages.models import Page
+from pages.models import Page, SitesPage
 
 
 class PageSitemap(Sitemap):
@@ -10,5 +10,14 @@ class PageSitemap(Sitemap):
     def lastmod(self, obj):
         return obj.updated_at
 
-sitemaps = {'pages': PageSitemap}
+
+class SitesPageSitemap(Sitemap):
+    """Sitemaps.org XML sitemap."""
+    def items(self):
+        return SitesPage.objects.current_site().indexable()
+    
+    def lastmod(self, obj):
+        return obj.updated_at
+
+sitemaps = {'pages': PageSitemap, 'sitespages': SitesPageSitemap}
 
