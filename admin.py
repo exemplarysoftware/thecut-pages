@@ -23,7 +23,6 @@ if 'ctas' in settings.INSTALLED_APPS:
     else:
         class PageCallToActionInline(GenericTabularInline):
             extra = 1
-            max_num = 1
             model = AttachedCallToAction
             exclude = ['order']
         
