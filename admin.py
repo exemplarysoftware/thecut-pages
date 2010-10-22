@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.contenttypes.generic import GenericStackedInline, GenericTabularInline
-from pages.models import Page
+from pages.models import Page, SitesPage
 
 
 PAGE_INLINES = []
@@ -44,4 +44,20 @@ class PageAdmin(admin.ModelAdmin):
         obj.save()
 
 admin.site.register(Page, PageAdmin)
+
+
+class SitesPageAdmin(admin.ModelAdmin):
+    date_hierarchy = 'publish_at'
+    inlines = PAGE_INLINES
+    list_display = ['title', 'url', 'publish_at', 'is_enabled']
+    list_filter = ['sites']
+    prepopulated_fields = {'url': ['title']}
+    search_fields = ['title', 'headline', 'url']
+    
+    def save_model(self, request, obj, form, change):
+        if not change: obj.created_by = request.user
+        obj.updated_by = request.user
+        obj.save()
+
+admin.site.register(SitesPage, SitesPageAdmin)
 
