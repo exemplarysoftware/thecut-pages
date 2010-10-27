@@ -1,17 +1,25 @@
 from datetime import datetime
 from django import forms
-from pages.models import Page
+from django.contrib.sites.models import Site
+from pages.models import Page, SitesPage
 
 
-class PageForm(forms.ModelForm):
-    publish_at = forms.DateTimeField(label='Publish Date & Time',
-        widget=forms.DateTimeInput(format='%d/%m/%Y %I:%M %p'),
-        input_formats=['%d/%m/%Y %I:%M %p', '%d/%m/%Y %H:%M', '%d/%m/%y %I:%M %p', '%d/%m/%y %H:%M'],
-        initial=datetime.now(),
-        help_text='Page will only be viewable on the website once this date and time has past.')
+class PageAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PageAdminForm, self).__init__(*args, **kwargs)
+        self.fields['publish_at'].initial = datetime.now()
+        self.fields['site'].initial = Site.objects.get_current()
     
     class Meta:
-        fields = ['title', 'headline', 'content',
-            'publish_at', 'is_public', 'site']
         model = Page
+
+
+class SitesPageAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SitesPageAdminForm, self).__init__(*args, **kwargs)
+        self.fields['publish_at'].initial = datetime.now()
+        self.fields['sites'].initial = [Site.objects.get_current()]
+    
+    class Meta:
+        model = SitesPage
 

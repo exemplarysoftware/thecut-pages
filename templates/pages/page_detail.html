@@ -1,8 +1,8 @@
-{% extends "base.html" %}
+{% extends "pages/base.html" %}
 
 {% block title %}{{ page.title }}{% endblock %}
 
-{% block extra_head %}
+{% block extrahead %}
 {% if not page.is_indexable %}<meta name="robots" content="noindex" />{% endif %}
 {% if page.meta_description %}<meta name="description" content="{{ page.meta_description }}" />{% endif %}
 {% endblock %}
@@ -32,11 +32,11 @@
   </ul>
   {% endif %}
   
-  {% if page.media.photos.all %}
-  <h2>Photos</h2>
+  {% if page.media.images.all %}
+  <h2>Images</h2>
   <ul>
-    {% for photo in page.media.photos.all %}
-      <li><img src="{{ photo.get_display_url }}" /></li>
+    {% for image in page.media.images.all %}
+      <li><img src="{{ image.get_display_url }}" /></li>
     {% endfor %}
   </ul>
   {% endif %}
@@ -45,7 +45,7 @@
   <h2>Galleries</h2>
   <ul>
     {% for gallery in page.media.galleries.all %}
-      <li><a href="{{ gallery.get_absolute_url }}">{% for photo in gallery.sample|slice:"1" %}<img src="{{ photo.get_thumbnail_url }}" />{% endfor %}</a></li>
+      <li><a href="{{ gallery.get_absolute_url }}">{% for image in gallery.sample|slice:"1" %}<img src="{{ image.get_thumbnail_url }}" />{% endfor %}</a></li>
     {% endfor %}
   </ul>
   {% endif %}
