@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.contenttypes.generic import GenericStackedInline, GenericTabularInline
+from django.contrib.contenttypes.generic import GenericTabularInline
+from pages.forms import PageAdminForm, SitesPageAdminForm
 from pages.models import Page, SitesPage
 
 
@@ -29,12 +30,21 @@ if 'ctas' in settings.INSTALLED_APPS:
 
 
 class PageAdmin(admin.ModelAdmin):
-    date_hierarchy = 'publish_at'
+    fieldsets = [
+        (None, {'fields': ['title', 'headline', 'content',
+            'meta_description', 'tags']}),
+        ('Publishing', {'fields': ['site', 'url',
+            ('publish_at', 'is_enabled'), 'publish_by', 'template',
+            'is_featured', 'is_indexable'], 'classes': ['collapse']}),
+    ]
+    form = PageAdminForm
     inlines = PAGE_INLINES
-    list_display = ['title', 'url', 'publish_at', 'is_enabled', 'site']
-    list_filter = ['site']
+    list_display = ['title', 'publish_at', 'is_enabled',
+        'is_featured', 'is_indexable']
+    list_filter = ['publish_at', 'is_enabled', 'is_featured',
+        'is_indexable']
     prepopulated_fields = {'url': ['title']}
-    search_fields = ['title', 'headline', 'url']
+    search_fields = ['title']
     
     def save_model(self, request, obj, form, change):
         if not change: obj.created_by = request.user
@@ -45,12 +55,21 @@ admin.site.register(Page, PageAdmin)
 
 
 class SitesPageAdmin(admin.ModelAdmin):
-    date_hierarchy = 'publish_at'
+    fieldsets = [
+        (None, {'fields': ['title', 'headline', 'content',
+            'meta_description', 'tags']}),
+        ('Publishing', {'fields': ['sites', 'url',
+            ('publish_at', 'is_enabled'), 'publish_by', 'template',
+            'is_featured', 'is_indexable'], 'classes': ['collapse']}),
+    ]
+    form = SitesPageAdminForm
     inlines = PAGE_INLINES
-    list_display = ['title', 'url', 'publish_at', 'is_enabled']
-    list_filter = ['sites']
+    list_display = ['title', 'publish_at', 'is_enabled',
+        'is_featured', 'is_indexable']
+    list_filter = ['publish_at', 'is_enabled', 'is_featured',
+        'is_indexable']
     prepopulated_fields = {'url': ['title']}
-    search_fields = ['title', 'headline', 'url']
+    search_fields = ['title']
     
     def save_model(self, request, obj, form, change):
         if not change: obj.created_by = request.user
