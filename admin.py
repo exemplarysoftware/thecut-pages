@@ -34,8 +34,9 @@ class PageAdmin(admin.ModelAdmin):
         (None, {'fields': ['title', 'headline', 'content',
             'meta_description', 'tags']}),
         ('Publishing', {'fields': ['site', 'url',
-            ('publish_at', 'is_enabled'), 'publish_by', 'template',
-            'is_featured', 'is_indexable'], 'classes': ['collapse']}),
+            ('publish_at', 'is_enabled'), 'expire_at', 'publish_by',
+            'template', 'is_featured', 'is_indexable'],
+            'classes': ['collapse']}),
     ]
     form = PageAdminForm
     inlines = PAGE_INLINES
@@ -59,8 +60,9 @@ class SitesPageAdmin(admin.ModelAdmin):
         (None, {'fields': ['title', 'headline', 'content',
             'meta_description', 'tags']}),
         ('Publishing', {'fields': ['sites', 'url',
-            ('publish_at', 'is_enabled'), 'publish_by', 'template',
-            'is_featured', 'is_indexable'], 'classes': ['collapse']}),
+            ('publish_at', 'is_enabled'), 'expire_at', 'publish_by',
+            'template', 'is_featured', 'is_indexable'],
+            'classes': ['collapse']}),
     ]
     form = SitesPageAdminForm
     inlines = PAGE_INLINES
