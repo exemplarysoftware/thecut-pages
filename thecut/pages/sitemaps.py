@@ -1,5 +1,5 @@
 from django.contrib.sitemaps import Sitemap
-from pages.models import Page, SitesPage
+from thecut.pages.models import Page, SitesPage
 
 
 class PageSitemap(Sitemap):
