@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 
 
-urlpatterns = patterns('pages.views',
+urlpatterns = patterns('thecut.pages.views',
     #url(r'^$', 'page_list', name='page_list'),
     #url(r'^new$', 'page_new', name='page_new'),
     #url(r'^(?P<page_id>\d+)/edit$', 'page_edit', name='page_edit'),

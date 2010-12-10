@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.http import Http404
-from pages.views import page
+from thecut.pages.views import page
 
 
 class PageMiddleware(object):
