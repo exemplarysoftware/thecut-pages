@@ -1,6 +1,6 @@
 {% extends "pages/base.html" %}
 
-{% block title %}{{ page.title }}{% endblock %}
+{% block title %}{{ page.title }} - {{ block.super }}{% endblock %}
 
 {% block extrahead %}
 {% if not page.is_indexable %}<meta name="robots" content="noindex" />{% endif %}

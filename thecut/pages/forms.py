@@ -1,7 +1,7 @@
 from datetime import datetime
 from django import forms
 from django.contrib.sites.models import Site
-from pages.models import Page, SitesPage
+from thecut.pages.models import Page, SitesPage
 
 
 class PageAdminForm(forms.ModelForm):

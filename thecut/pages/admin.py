@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.contenttypes.generic import GenericTabularInline
-from pages.forms import PageAdminForm, SitesPageAdminForm
-from pages.models import Page, SitesPage
+from thecut.pages.forms import PageAdminForm, SitesPageAdminForm
+from thecut.pages.models import Page, SitesPage
 
 
 PAGE_INLINES = []
