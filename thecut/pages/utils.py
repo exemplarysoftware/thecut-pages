@@ -10,7 +10,7 @@ def generate_unique_url(text, model, queryset=None, iteration=0):
         slug = '%s-%s' %(iteration, slug)
     url = '/%s' %(slug[:49])
     try:
-        print queryset.get(url=url)
+        queryset.get(url=url)
     except model.DoesNotExist:
         return url
     else:
