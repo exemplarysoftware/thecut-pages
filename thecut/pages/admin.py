@@ -11,13 +11,15 @@ if 'thecut.media' in settings.INSTALLED_APPS:
     try:
         from thecut.media.admin import MediaSetInline
     except ImportError:
-        if 'media' in settings.INSTALLED_APPS:
-            try:
-                from media.admin import MediaSetInline
-            except ImportError:
-                pass
-            else:
-                PAGE_INLINES += [MediaSetInline]
+        pass
+    else:
+        PAGE_INLINES += [MediaSetInline]
+# Compatibility for version 0.01 of media app.
+elif 'media' in settings.INSTALLED_APPS:
+    try:
+        from media.admin import MediaSetInline
+    except ImportError:
+        pass
     else:
         PAGE_INLINES += [MediaSetInline]
 
