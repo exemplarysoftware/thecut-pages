@@ -7,11 +7,17 @@ from thecut.pages.models import Page, SitesPage
 
 PAGE_INLINES = []
 
-if 'media' in settings.INSTALLED_APPS:
+if 'thecut.media' in settings.INSTALLED_APPS:
     try:
-        from media.admin import MediaSetInline
+        from thecut.media.admin import MediaSetInline
     except ImportError:
-        pass
+        if 'media' in settings.INSTALLED_APPS:
+            try:
+                from media.admin import MediaSetInline
+            except ImportError:
+                pass
+            else:
+                PAGE_INLINES += [MediaSetInline]
     else:
         PAGE_INLINES += [MediaSetInline]
 
