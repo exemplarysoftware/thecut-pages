@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.views.decorators.csrf import csrf_protect
 from thecut.pages.models import Page, SitesPage
 
 
