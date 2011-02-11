@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.contenttypes.generic import GenericTabularInline
+from thecut.core.admin import ModelAdmin
 from thecut.pages.forms import PageAdminForm, SitesPageAdminForm
 from thecut.pages.models import Page, SitesPage
 
@@ -10,14 +11,6 @@ PAGE_INLINES = []
 if 'thecut.media' in settings.INSTALLED_APPS:
     try:
         from thecut.media.admin import MediaSetInline
-    except ImportError:
-        pass
-    else:
-        PAGE_INLINES += [MediaSetInline]
-# Compatibility for version 0.01 of media app.
-elif 'media' in settings.INSTALLED_APPS:
-    try:
-        from media.admin import MediaSetInline
     except ImportError:
         pass
     else:
@@ -37,7 +30,7 @@ if 'ctas' in settings.INSTALLED_APPS:
         PAGE_INLINES += [PageCallToActionInline]
 
 
-class PageAdmin(admin.ModelAdmin):
+class PageAdmin(ModelAdmin):
     fieldsets = [
         (None, {'fields': ['title', 'headline', 'content',
             'meta_description', 'tags']}),
@@ -54,16 +47,11 @@ class PageAdmin(admin.ModelAdmin):
         'is_indexable']
     prepopulated_fields = {'url': ['title']}
     search_fields = ['title']
-    
-    def save_model(self, request, obj, form, change):
-        if not change: obj.created_by = request.user
-        obj.updated_by = request.user
-        obj.save()
 
 admin.site.register(Page, PageAdmin)
 
 
-class SitesPageAdmin(admin.ModelAdmin):
+class SitesPageAdmin(ModelAdmin):
     fieldsets = [
         (None, {'fields': ['title', 'headline', 'content',
             'meta_description', 'tags']}),
@@ -80,11 +68,6 @@ class SitesPageAdmin(admin.ModelAdmin):
         'is_indexable']
     prepopulated_fields = {'url': ['title']}
     search_fields = ['title']
-    
-    def save_model(self, request, obj, form, change):
-        if not change: obj.created_by = request.user
-        obj.updated_by = request.user
-        obj.save()
 
 admin.site.register(SitesPage, SitesPageAdmin)
 
