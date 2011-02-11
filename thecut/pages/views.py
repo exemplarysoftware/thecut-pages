@@ -4,13 +4,6 @@ from django.template import RequestContext
 from thecut.pages.models import Page, SitesPage
 
 
-try:
-    from django.views.decorators.csrf import csrf_protect
-except ImportError:
-    def csrf_protect(obj):
-        return obj
-
-
 DEFAULT_TEMPLATE = getattr(settings, 'PAGES_DEFAULT_TEMPLATE',
     'pages/page_detail.html')
 
@@ -32,7 +25,7 @@ def page_detail(request, url, extra_context=None):
     context.update({'page': page})
     
     # Set template, if one is stored.
-    template = page.template and page.template or DEFAULT_TEMPLATE
+    template = page.template or DEFAULT_TEMPLATE
     
     return render_to_response(template, context,
         context_instance=RequestContext(request))

@@ -1,12 +1,7 @@
-from datetime import datetime
-from django.conf import settings
-from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.sites.models import Site
 from django.db import models
 from thecut.pages.utils import generate_unique_url
-from thecut.managers import QuerySetManager
-from thecut.models import AbstractSiteResource, AbstractSitesResource
+from thecut.core.managers import QuerySetManager
+from thecut.core.models import AbstractSiteResource, AbstractSitesResource
 
 
 class Page(AbstractSiteResource):
@@ -26,6 +21,8 @@ class Page(AbstractSiteResource):
         if not self.url:
             self.url = generate_unique_url(self.title, Page,
                 queryset=Page.objects.filter(site=self.site))
+        if not self.url.startswith('/'):
+            self.url = '/%s' %(self.url)
         super(Page, self).save(*args, **kwargs)
 
 
@@ -36,9 +33,6 @@ class SitesPage(AbstractSitesResource):
     
     objects = QuerySetManager()
     
-    #class Meta(AbstractSitesResource.Meta):
-    #    verbose_name = 'page'
-    
     def get_absolute_url(self):
         return self.url
     
@@ -46,5 +40,7 @@ class SitesPage(AbstractSitesResource):
         if not self.url:
             self.url = generate_unique_url(self.title, SitesPage,
                 queryset=SitesPage.objects.all())
+        if not self.url.startswith('/'):
+            self.url = '/%s' %(self.url)
         super(SitesPage, self).save(*args, **kwargs)
 
