@@ -1,18 +1,6 @@
-from django.conf import settings
-from django.shortcuts import get_object_or_404, render_to_response
-from django.template import RequestContext
+from django.views.decorators.csrf import csrf_protect
+from django.views.generic.list_detail import object_detail
 from thecut.pages.models import Page, SitesPage
-
-
-try:
-    from django.views.decorators.csrf import csrf_protect
-except ImportError:
-    def csrf_protect(obj):
-        return obj
-
-
-DEFAULT_TEMPLATE = getattr(settings, 'PAGES_DEFAULT_TEMPLATE',
-    'pages/page_detail.html')
 
 
 @csrf_protect
@@ -21,19 +9,18 @@ def page(request, url):
     return page_detail(request, url)
 
 
-def page_detail(request, url, extra_context=None):
-    try:
-        page = Page.objects.current_site().active().get(url=url)
-    except Page.DoesNotExist:
-        page = get_object_or_404(
-            SitesPage.objects.current_site().active(), url=url)
+def page_detail(request, url, queryset=None, **kwargs):
+    kwdefaults = {'slug': url, 'slug_field': 'url',
+        'template_name_field': 'template',
+        'template_object_name': 'page'}
     
-    context = extra_context or {}
-    context.update({'page': page})
+    for key, value in kwdefaults.items():
+        if not key in kwargs:
+            kwargs.update({key: value})
     
-    # Set template, if one is stored.
-    template = page.template and page.template or DEFAULT_TEMPLATE
+    if not queryset:
+        queryset = Page.objects.current_site().active().filter(url=url) \
+            or SitesPage.objects.current_site().active().filter(url=url)
     
-    return render_to_response(template, context,
-        context_instance=RequestContext(request))
+    return object_detail(request, queryset, **kwargs)
 
