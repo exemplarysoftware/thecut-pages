@@ -1,2 +1,31 @@
 The Cut Django App: Pages
 
+
+
+============
+thecut.pages
+============
+
+To install this application (whilst in the project's activated
+virtualenv)::
+    pip install git+ssh://git@git.thecut.net.au/thecut-pages@0.03#egg=pages
+
+
+Add the ``thecut.pages`` to the project's ``INSTALLED_APPS`` setting::
+
+    INSTALLED_PAGES = (
+        ...
+        'thecut.pages',
+    )
+
+
+Add the ``thecut.pages.middleware.PageMiddleware`` to the end
+(but before any RedirectFallbackMiddleware) of the project's
+``MIDDLEWARE_CLASSES`` setting::
+
+    MIDDLEWARE_CLASSES = (
+        ...
+        'thecut.pages.middleware.PageMiddleware',
+        'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
+    )
+
