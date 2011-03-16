@@ -10,17 +10,14 @@ def page(request, url):
 
 
 def page_detail(request, url, queryset=None, **kwargs):
-    kwdefaults = {'slug': url, 'slug_field': 'url',
-        'template_name_field': 'template',
-        'template_object_name': 'page'}
-    
-    for key, value in kwdefaults.items():
-        if not key in kwargs:
-            kwargs.update({key: value})
-    
-    if not queryset:
+    if queryset is None:
         queryset = Page.objects.current_site().active().filter(url=url) \
             or SitesPage.objects.current_site().active().filter(url=url)
     
-    return object_detail(request, queryset, **kwargs)
+    kwdefaults = {'slug': url, 'slug_field': 'url',
+        'template_name_field': 'template',
+        'template_object_name': 'page'}
+    kwdefaults.update(kwargs)
+    
+    return object_detail(request, queryset, **kwdefaults)
 

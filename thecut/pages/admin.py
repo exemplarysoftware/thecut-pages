@@ -32,11 +32,13 @@ if 'ctas' in settings.INSTALLED_APPS:
 
 class PageAdmin(ModelAdmin):
     fieldsets = [
-        (None, {'fields': ['title', 'headline', 'content',
-            'meta_description', 'tags']}),
+        (None, {'fields': ['title', 'headline', 'featured_content',
+            'content', 'meta_description', 'tags']}),
         ('Publishing', {'fields': ['site', 'url',
             ('publish_at', 'is_enabled'), 'expire_at', 'publish_by',
-            'template', 'is_featured', 'is_indexable'],
+            'template', 'is_featured', 'is_indexable',
+            ('created_at', 'created_by'),
+            ('updated_at', 'updated_by')],
             'classes': ['collapse']}),
     ]
     form = PageAdminForm
@@ -46,6 +48,8 @@ class PageAdmin(ModelAdmin):
     list_filter = ['publish_at', 'is_enabled', 'is_featured',
         'is_indexable']
     prepopulated_fields = {'url': ['title']}
+    readonly_fields = ['created_at', 'created_by',
+        'updated_at', 'updated_by']
     search_fields = ['title']
 
 admin.site.register(Page, PageAdmin)
@@ -53,11 +57,13 @@ admin.site.register(Page, PageAdmin)
 
 class SitesPageAdmin(ModelAdmin):
     fieldsets = [
-        (None, {'fields': ['title', 'headline', 'content',
-            'meta_description', 'tags']}),
+        (None, {'fields': ['title', 'headline', 'featured_content',
+            'content', 'meta_description', 'tags']}),
         ('Publishing', {'fields': ['sites', 'url',
             ('publish_at', 'is_enabled'), 'expire_at', 'publish_by',
-            'template', 'is_featured', 'is_indexable'],
+            'template', 'is_featured', 'is_indexable',
+            ('created_at', 'created_by'),
+            ('updated_at', 'updated_by')],
             'classes': ['collapse']}),
     ]
     form = SitesPageAdminForm
@@ -67,6 +73,8 @@ class SitesPageAdmin(ModelAdmin):
     list_filter = ['publish_at', 'is_enabled', 'is_featured',
         'is_indexable']
     prepopulated_fields = {'url': ['title']}
+    readonly_fields = ['created_at', 'created_by',
+        'updated_at', 'updated_by']
     search_fields = ['title']
 
 admin.site.register(SitesPage, SitesPageAdmin)
