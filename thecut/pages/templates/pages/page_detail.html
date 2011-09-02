@@ -12,8 +12,8 @@
 {% block content %}
   
   <h1>{{ page.heading }}</h1>
-  <div>{{ page.featured_content|safe }}</div>
-  <div>{{ page.content|safe }}</div>
+  {% if page.featured_content %}<div>{{ page.featured_content|safe }}</div>{% endif %}
+  {% if page.content %}<div>{{ page.content|safe }}</div>{% endif %}
   
   {% spaceless %}{% for image in page.media.images %}
     {% if forloop.first %}<h2>Images</h2><ul>{% endif %}
