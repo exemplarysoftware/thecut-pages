@@ -4,7 +4,7 @@ from thecut.pages import views
 
 
 urls = patterns('thecut.pages.views',
-    url(r'^(?P<url>[\w/-]+)$', views.DetailView.as_view(), name='page_detail'),
+    url(r'^(?P<slug>[\w/-]+)$', views.DetailView.as_view(), name='page_detail'),
 )
 
 urlpatterns = patterns('',

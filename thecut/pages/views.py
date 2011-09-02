@@ -17,6 +17,7 @@ class DetailView(generic.DetailView):
     template_name_field = 'template'
     
     def get_queryset(self):
+        url = self.kwargs.get('slug', None)
         return Page.objects.current_site().active().filter(url=url) \
             or SitesPage.objects.current_site().active().filter(url=url)
 
@@ -24,5 +25,6 @@ class DetailView(generic.DetailView):
 @csrf_protect
 def page(request, url):
     """Wrapper for page_detail view."""
-    return DetailView.as_view(request, slug=url)
+    view = DetailView.as_view()
+    return view(request, slug=url)
 
