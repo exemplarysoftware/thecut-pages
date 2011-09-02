@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.contrib.sitemaps import Sitemap
 from thecut.pages.models import Page, SitesPage
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from thecut.core.forms import ModelAdminForm
 from thecut.pages.models import Page, SitesPage
 

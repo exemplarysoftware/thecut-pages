@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic.list_detail import object_detail
 from thecut.pages.models import Page, SitesPage
