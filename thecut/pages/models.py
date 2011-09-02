@@ -5,14 +5,14 @@ from thecut.core.managers import QuerySetManager
 from thecut.core.models import AbstractSiteResource, AbstractSitesResource
 
 
-class Page(AbstractSiteResource):
+class AbstractPage(AbstractSiteResource):
     """Generic page."""
     url = models.CharField(max_length=100, db_index=True,
         help_text='Example: /my-page')
-    
     objects = QuerySetManager()
     
     class Meta(AbstractSiteResource.Meta):
+        abstract = True
         unique_together = ['url', 'site']
     
     def get_absolute_url(self):
@@ -27,12 +27,14 @@ class Page(AbstractSiteResource):
         super(Page, self).save(*args, **kwargs)
 
 
-class SitesPage(AbstractSitesResource):
+class AbstractSitesPage(AbstractSitesResource):
     """Generic page, which can be associated with multiple sites."""
     url = models.CharField(max_length=100, db_index=True, unique=True,
         help_text='Example: /my-page')
-    
     objects = QuerySetManager()
+    
+    class Meta(AbstractSitesResource.Meta):
+        abstract = True
     
     def get_absolute_url(self):
         return self.url
@@ -44,4 +46,12 @@ class SitesPage(AbstractSitesResource):
         if not self.url.startswith('/'):
             self.url = '/%s' %(self.url)
         super(SitesPage, self).save(*args, **kwargs)
+
+
+class Page(AbstractPage):
+    objects = QuerySetManager()
+
+
+class SitesPage(AbstractSitesPage):
+    objects = QuerySetManager()
 
