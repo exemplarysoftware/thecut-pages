@@ -1,54 +1,35 @@
 {% extends "pages/base.html" %}
+{% load thumbnail %}
 
 {% block title %}{{ page.title }} - {{ block.super }}{% endblock %}
 
 {% block extrahead %}
-{% if not page.is_indexable %}<meta name="robots" content="noindex" />{% endif %}
-{% if page.meta_description %}<meta name="description" content="{{ page.meta_description }}" />{% endif %}
+  {{ block.super }}
+  {% if not page.is_indexable %}<meta name="robots" content="noindex" />{% endif %}
+  {% if page.meta_description %}<meta name="description" content="{{ page.meta_description }}" />{% endif %}
 {% endblock %}
 
 {% block content %}
   
   <h1>{{ page.heading }}</h1>
-  <div>
-    {{ page.content|safe }}
-  </div>
+  {% if page.featured_content %}<div>{{ page.featured_content|safe }}</div>{% endif %}
+  {% if page.content %}<div>{{ page.content|safe }}</div>{% endif %}
   
-  {% if page.call_to_actions %}
-  <h2>Actions</h2>
-  <ul>
-    {% for cta in page.call_to_actions %}
-    <li><a href="{{ cta.get_absolute_url }}">{{ cta }}</a></li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+  {% spaceless %}{% for image in page.media.images %}
+    {% if forloop.first %}<h2>Images</h2><ul>{% endif %}
+    {% thumbnail image.get_image "200x200" as thumb %}
+    <li><a href="{{ image.get_absolute_url }}"><img src="{{ thumb.url }}" alt="{{ image }}" /></a></li>
+    {% endthumbnail %}
+    {% if forloop.last %}</ul>{% endif %}
+  {% endfor %}{% endspaceless %}
   
-  {% if page.media.documents.all %}
-  <h2>Documents</h2>
-  <ul>
-    {% for document in page.media.documents.all %}
-      <li><a href="{{ document.get_absolute_url }}">{{ document }}</a></li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  
-  {% if page.media.images.all %}
-  <h2>Images</h2>
-  <ul>
-    {% for image in page.media.images.all %}
-      <li><img src="{{ image.get_display_url }}" /></li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  
-  {% if page.media.galleries.all %}
-  <h2>Galleries</h2>
-  <ul>
-    {% for gallery in page.media.galleries.all %}
-      <li><a href="{{ gallery.get_absolute_url }}">{% for image in gallery.sample|slice:"1" %}<img src="{{ image.get_thumbnail_url }}" />{% endfor %}</a></li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+  {% spaceless %}{% for document in page.media.documents %}
+    {% if forloop.first %}<h2>Documents</h2><ul>{% endif %}
+    {% thumbnail document.get_image "200x200" as thumb %}
+    <li><a href="{{ document.get_absolute_url }}"><img src="{{ thumb.url }}" alt="{{ document }}" /></a></li>
+    {% endthumbnail %}
+    {% if forloop.last %}</ul>{% endif %}
+  {% endfor %}{% endspaceless %}
   
 {% endblock %}
 

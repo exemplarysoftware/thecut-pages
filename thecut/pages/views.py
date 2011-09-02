@@ -1,23 +1,30 @@
+# -*- coding: utf-8 -*-
 from django.views.decorators.csrf import csrf_protect
-from django.views.generic.list_detail import object_detail
 from thecut.pages.models import Page, SitesPage
+
+# Class-based views
+from distutils.version import StrictVersion
+from django import get_version
+if StrictVersion(get_version()) < StrictVersion('1.3'):
+    import cbv as generic
+else:
+    from django.views import generic
+
+
+class DetailView(generic.DetailView):
+    context_object_name = 'page'
+    slug_field = 'url'
+    template_name_field = 'template'
+    
+    def get_queryset(self):
+        url = self.kwargs.get('slug', None)
+        return Page.objects.current_site().active().filter(url=url) \
+            or SitesPage.objects.current_site().active().filter(url=url)
 
 
 @csrf_protect
 def page(request, url):
     """Wrapper for page_detail view."""
-    return page_detail(request, url)
-
-
-def page_detail(request, url, queryset=None, **kwargs):
-    if queryset is None:
-        queryset = Page.objects.current_site().active().filter(url=url) \
-            or SitesPage.objects.current_site().active().filter(url=url)
-    
-    kwdefaults = {'slug': url, 'slug_field': 'url',
-        'template_name_field': 'template',
-        'template_object_name': 'page'}
-    kwdefaults.update(kwargs)
-    
-    return object_detail(request, queryset, **kwdefaults)
+    view = DetailView.as_view()
+    return view(request, slug=url)
 

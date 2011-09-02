@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.contrib.sitemaps import Sitemap
 from thecut.pages.models import Page, SitesPage
 
@@ -19,5 +20,6 @@ class SitesPageSitemap(Sitemap):
     def lastmod(self, obj):
         return obj.updated_at
 
-sitemaps = {'pages': PageSitemap, 'sitespages': SitesPageSitemap}
+
+sitemaps = {'pages_page': PageSitemap, 'pages_sitespage': SitesPageSitemap}
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.conf import settings
 from django.http import Http404
 from thecut.pages.views import page
@@ -9,7 +10,7 @@ class PageMiddleware(object):
         if response.status_code != 404:
             return response # No need to check for a page on non-404 responses.
         try:
-            return page(request, request.path_info)
+            response = page(request, request.path_info)
         # Return the original response if any errors happened. Because this
         # is a middleware, we can't assume the errors will be caught elsewhere.
         except Http404:
@@ -17,5 +18,9 @@ class PageMiddleware(object):
         except:
             if settings.DEBUG:
                 raise
+            return response
+        else:
+            if hasattr(response, 'render') and callable(response.render):
+                response.render()
             return response
 
