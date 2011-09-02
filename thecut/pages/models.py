@@ -24,7 +24,7 @@ class AbstractPage(AbstractSiteResource):
                 queryset=Page.objects.filter(site=self.site))
         if not self.url.startswith('/'):
             self.url = '/%s' %(self.url)
-        super(Page, self).save(*args, **kwargs)
+        super(AbstractPage, self).save(*args, **kwargs)
 
 
 class AbstractSitesPage(AbstractSitesResource):
@@ -45,7 +45,7 @@ class AbstractSitesPage(AbstractSitesResource):
                 queryset=SitesPage.objects.all())
         if not self.url.startswith('/'):
             self.url = '/%s' %(self.url)
-        super(SitesPage, self).save(*args, **kwargs)
+        super(AbstractSitesPage, self).save(*args, **kwargs)
 
 
 class Page(AbstractPage):
