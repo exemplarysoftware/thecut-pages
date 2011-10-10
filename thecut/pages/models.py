@@ -20,8 +20,8 @@ class AbstractPage(AbstractSiteResource):
     
     def save(self, *args, **kwargs):
         if not self.url:
-            self.url = generate_unique_url(self.title, Page,
-                queryset=Page.objects.filter(site=self.site))
+            self.url = generate_unique_url(self.title, self.__class__,
+                queryset=self.__class__.objects.filter(site=self.site))
         if not self.url.startswith('/'):
             self.url = '/%s' %(self.url)
         super(AbstractPage, self).save(*args, **kwargs)
@@ -41,8 +41,7 @@ class AbstractSitesPage(AbstractSitesResource):
     
     def save(self, *args, **kwargs):
         if not self.url:
-            self.url = generate_unique_url(self.title, SitesPage,
-                queryset=SitesPage.objects.all())
+            self.url = generate_unique_url(self.title, self.__class__)
         if not self.url.startswith('/'):
             self.url = '/%s' %(self.url)
         super(AbstractSitesPage, self).save(*args, **kwargs)
