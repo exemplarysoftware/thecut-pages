@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 from django.views.decorators.csrf import csrf_protect
 from thecut.pages.models import Page, SitesPage
 

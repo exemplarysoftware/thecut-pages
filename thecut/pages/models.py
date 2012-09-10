@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 from django.db import models
 from thecut.pages.utils import generate_unique_url
 from thecut.core.managers import QuerySetManager
