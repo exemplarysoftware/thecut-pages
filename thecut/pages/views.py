@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 from django.views.decorators.csrf import csrf_protect
-from thecut.pages.models import Page, SitesPage
+from thecut.pages.models import Page
 
 # Class-based views
 from distutils.version import StrictVersion
@@ -18,8 +19,7 @@ class DetailView(generic.DetailView):
     
     def get_queryset(self):
         url = self.kwargs.get('slug', None)
-        return Page.objects.current_site().active().filter(url=url) \
-            or SitesPage.objects.current_site().active().filter(url=url)
+        return Page.objects.current_site().active().filter(url=url)
 
 
 @csrf_protect
