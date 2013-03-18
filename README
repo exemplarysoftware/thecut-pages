@@ -1,13 +1,13 @@
 The Cut Django App: Pages
 
-
-
 ============
 thecut.pages
 ============
 
-To install this application (whilst in the project's activated
-virtualenv)::
+This application requires ``thecut.authorship`` and ``thecut.publishing``.
+
+
+To install this application (whilst in the project's activated virtualenv)::
     pip install git+ssh://git@git.thecut.net.au/thecut-pages
 
 
@@ -19,13 +19,12 @@ Add the ``thecut.pages`` to the project's ``INSTALLED_APPS`` setting::
     )
 
 
-Add the ``thecut.pages.middleware.PageMiddleware`` to the end
-(but before any RedirectFallbackMiddleware) of the project's
-``MIDDLEWARE_CLASSES`` setting::
+Add the ``thecut.pages.middleware.PageMiddleware`` to the end (but before any
+``RedirectFallbackMiddleware``) of the project's ``MIDDLEWARE_CLASSES``
+setting::
 
     MIDDLEWARE_CLASSES = (
         ...
         'thecut.pages.middleware.PageMiddleware',
         'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     )
-
