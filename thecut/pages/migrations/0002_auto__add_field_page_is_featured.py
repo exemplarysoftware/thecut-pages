@@ -3,17 +3,18 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from thecut.authorship.settings import AUTH_USER_MODEL
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Adding field 'Page.is_featured'
         db.add_column('pages_page', 'is_featured', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True), keep_default=False)
 
 
     def backwards(self, orm):
-        
+
         # Deleting field 'Page.is_featured'
         db.delete_column('pages_page', 'is_featured')
 
@@ -59,7 +60,7 @@ class Migration(SchemaMigration):
             'Meta': {'unique_together': "(['url', 'site'],)", 'object_name': 'Page'},
             'content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_created_by_user'", 'to': "orm['auth.User']"}),
+            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_created_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'headline': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'blank': 'True'}),
@@ -71,7 +72,7 @@ class Migration(SchemaMigration):
             'template': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_updated_by_user'", 'to': "orm['auth.User']"}),
+            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_updated_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '100', 'db_index': 'True'})
         },
         'sites.site': {

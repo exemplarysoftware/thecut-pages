@@ -3,11 +3,12 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from thecut.authorship.settings import AUTH_USER_MODEL
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Adding field 'SitesPage.featured_content'
         db.add_column('pages_sitespage', 'featured_content', self.gf('django.db.models.fields.TextField')(null=True, blank=True), keep_default=False)
 
@@ -16,7 +17,7 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        
+
         # Deleting field 'SitesPage.featured_content'
         db.delete_column('pages_sitespage', 'featured_content')
 
@@ -65,7 +66,7 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['title']", 'unique_together': "(['url', 'site'],)", 'object_name': 'Page'},
             'content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_created_by_user'", 'to': "orm['auth.User']"}),
+            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_created_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'expire_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'featured_content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'headline': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
@@ -75,20 +76,20 @@ class Migration(SchemaMigration):
             'is_indexable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'meta_description': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'publish_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'page_publish_by_user'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'page_publish_by_user'", 'null': 'True', 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['sites.Site']"}),
             'tags': ('tagging.fields.TagField', [], {'null': 'True'}),
             'template': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_updated_by_user'", 'to': "orm['auth.User']"}),
+            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_updated_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '100', 'db_index': 'True'})
         },
         'pages.sitespage': {
             'Meta': {'ordering': "['title']", 'object_name': 'SitesPage'},
             'content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'sitespage_created_by_user'", 'to': "orm['auth.User']"}),
+            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'sitespage_created_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'expire_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'featured_content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'headline': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
@@ -98,13 +99,13 @@ class Migration(SchemaMigration):
             'is_indexable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'meta_description': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'publish_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'sitespage_publish_by_user'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'sitespage_publish_by_user'", 'null': 'True', 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'sites': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['sites.Site']", 'null': 'True', 'blank': 'True'}),
             'tags': ('tagging.fields.TagField', [], {'null': 'True'}),
             'template': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'sitespage_updated_by_user'", 'to': "orm['auth.User']"}),
+            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'sitespage_updated_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'url': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100', 'db_index': 'True'})
         },
         'sites.site': {
