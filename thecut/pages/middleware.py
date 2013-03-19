@@ -7,6 +7,7 @@ from thecut.pages.views import page
 
 class PageMiddleware(object):
     # Adapted from the Django FlatpageFallbackMiddleware
+
     def process_response(self, request, response):
         if response.status_code != 404:
             return response # No need to check for a page on non-404 responses.
@@ -24,4 +25,3 @@ class PageMiddleware(object):
             if hasattr(response, 'render') and callable(response.render):
                 response.render()
             return response
-

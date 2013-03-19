@@ -3,11 +3,12 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from thecut.authorship.settings import AUTH_USER_MODEL
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Deleting model 'SitesPage'
         db.delete_table('pages_sitespage')
 
@@ -16,24 +17,24 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        
+
         # Adding model 'SitesPage'
         db.create_table('pages_sitespage', (
             ('is_enabled', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('meta_description', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
             ('is_featured', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('updated_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='sitespage_updated_by_user', to=orm['auth.User'])),
+            ('updated_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='sitespage_updated_by_user', to=orm[AUTH_USER_MODEL])),
             ('tags', self.gf('tagging.fields.TagField')(null=True)),
             ('headline', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
             ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='sitespage_created_by_user', to=orm['auth.User'])),
+            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='sitespage_created_by_user', to=orm[AUTH_USER_MODEL])),
             ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
             ('content', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
             ('is_indexable', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('url', self.gf('django.db.models.fields.CharField')(max_length=100, unique=True, db_index=True)),
             ('template', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
-            ('publish_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='sitespage_publish_by_user', null=True, to=orm['auth.User'], blank=True)),
+            ('publish_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='sitespage_publish_by_user', null=True, to=orm[AUTH_USER_MODEL], blank=True)),
             ('publish_at', self.gf('django.db.models.fields.DateTimeField')()),
             ('featured_content', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -91,7 +92,7 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['title']", 'unique_together': "([u'url', u'site'],)", 'object_name': 'Page'},
             'content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_created_by_user'", 'to': "orm['auth.User']"}),
+            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_created_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'expire_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'featured_content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'headline': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
@@ -101,13 +102,13 @@ class Migration(SchemaMigration):
             'is_indexable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'meta_description': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'publish_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'page_publish_by_user'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'page_publish_by_user'", 'null': 'True', 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['sites.Site']"}),
             'tags': ('tagging.fields.TagField', [], {'null': 'True'}),
             'template': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_updated_by_user'", 'to': "orm['auth.User']"}),
+            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_updated_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '100', 'db_index': 'True'})
         },
         'sites.site': {

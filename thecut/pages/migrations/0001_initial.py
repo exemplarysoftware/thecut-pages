@@ -3,11 +3,12 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from thecut.authorship.settings import AUTH_USER_MODEL
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Adding model 'Page'
         db.create_table('pages_page', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -19,9 +20,9 @@ class Migration(SchemaMigration):
             ('is_indexable', self.gf('django.db.models.fields.BooleanField')(default=True, blank=True)),
             ('meta_description', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
             ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='page_created_by_user', to=orm['auth.User'])),
+            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='page_created_by_user', to=orm[AUTH_USER_MODEL])),
             ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('updated_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='page_updated_by_user', to=orm['auth.User'])),
+            ('updated_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='page_updated_by_user', to=orm[AUTH_USER_MODEL])),
             ('site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['sites.Site'])),
             ('url', self.gf('django.db.models.fields.CharField')(max_length=100, db_index=True)),
             ('template', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
@@ -33,12 +34,12 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        
-        # Deleting model 'Page'
-        db.delete_table('pages_page')
 
         # Removing unique constraint on 'Page', fields ['url', 'site']
         db.delete_unique('pages_page', ['url', 'site_id'])
+
+        # Deleting model 'Page'
+        db.delete_table('pages_page')
 
 
     models = {
@@ -82,7 +83,7 @@ class Migration(SchemaMigration):
             'Meta': {'unique_together': "(['url', 'site'],)", 'object_name': 'Page'},
             'content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_created_by_user'", 'to': "orm['auth.User']"}),
+            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_created_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'headline': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'blank': 'True'}),
@@ -93,7 +94,7 @@ class Migration(SchemaMigration):
             'template': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_updated_by_user'", 'to': "orm['auth.User']"}),
+            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_updated_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '100', 'db_index': 'True'})
         },
         'sites.site': {
