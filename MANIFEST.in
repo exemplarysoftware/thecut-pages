@@ -1,5 +1,3 @@
 include RELEASE-VERSION
-include AUTHORS COPYING README INSTALL LICENCE
-graft thecut/pages/media
-graft thecut/pages/static
+include README
 graft thecut/pages/templates
