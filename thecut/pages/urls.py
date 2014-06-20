@@ -17,6 +17,4 @@ urls = patterns(
 
 )
 
-urlpatterns = patterns('',
-    (r'^', include(urls, namespace='pages')),
-)
+urlpatterns = patterns('', (r'^', include(urls, namespace='pages')))
