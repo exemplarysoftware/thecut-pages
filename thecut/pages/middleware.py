@@ -10,7 +10,7 @@ class PageMiddleware(object):
 
     def process_response(self, request, response):
         if response.status_code != 404:
-            return response # No need to check for a page on non-404 responses.
+            return response  # No need to check for a page on non-404 responses
         try:
             response = page(request, request.path_info)
         # Return the original response if any errors happened. Because this
