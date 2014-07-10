@@ -5,9 +5,11 @@ from thecut.publishing.factories import ContentFactory, ContentFakerFactory
 
 class PageFactory(ContentFactory):
 
-    FACTORY_FOR = 'pages.Page'
+    class Meta(object):
+        model = 'pages.Page'
 
 
 class PageFakerFactory(ContentFakerFactory):
 
-    FACTORY_FOR = 'pages.Page'
+    class Meta(object):
+        model = 'pages.Page'
