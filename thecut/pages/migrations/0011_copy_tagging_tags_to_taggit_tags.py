@@ -13,6 +13,93 @@ except ImportError:
     # Pre-Django 1.5
     from django.template.defaultfilters import slugify
 
+# From django-tagging ---------------------------------------------------------
+
+from django.utils.encoding import force_unicode
+
+def parse_tag_input(input):
+    """
+    Parses tag input, with multiple word input being activated and
+    delineated by commas and double quotes. Quotes take precedence, so
+    they may contain commas.
+
+    Returns a sorted list of unique tag names.
+    """
+    if not input:
+        return []
+
+    input = force_unicode(input)
+
+    # Special case - if there are no commas or double quotes in the
+    # input, we don't *do* a recall... I mean, we know we only need to
+    # split on spaces.
+    if u',' not in input and u'"' not in input:
+        words = list(set(split_strip(input, u' ')))
+        words.sort()
+        return words
+
+    words = []
+    buffer = []
+    # Defer splitting of non-quoted sections until we know if there are
+    # any unquoted commas.
+    to_be_split = []
+    saw_loose_comma = False
+    open_quote = False
+    i = iter(input)
+    try:
+        while 1:
+            c = i.next()
+            if c == u'"':
+                if buffer:
+                    to_be_split.append(u''.join(buffer))
+                    buffer = []
+                # Find the matching quote
+                open_quote = True
+                c = i.next()
+                while c != u'"':
+                    buffer.append(c)
+                    c = i.next()
+                if buffer:
+                    word = u''.join(buffer).strip()
+                    if word:
+                        words.append(word)
+                    buffer = []
+                open_quote = False
+            else:
+                if not saw_loose_comma and c == u',':
+                    saw_loose_comma = True
+                buffer.append(c)
+    except StopIteration:
+        # If we were parsing an open quote which was never closed treat
+        # the buffer as unquoted.
+        if buffer:
+            if open_quote and u',' in buffer:
+                saw_loose_comma = True
+            to_be_split.append(u''.join(buffer))
+    if to_be_split:
+        if saw_loose_comma:
+            delimiter = u','
+        else:
+            delimiter = u' '
+        for chunk in to_be_split:
+            words.extend(split_strip(chunk, delimiter))
+    words = list(set(words))
+    words.sort()
+    return words
+
+def split_strip(input, delimiter=u','):
+    """
+    Splits ``input`` on ``delimiter``, stripping each resulting string
+    and returning a list of non-empty strings.
+    """
+    if not input:
+        return []
+
+    words = [w.strip() for w in input.split(delimiter)]
+    return [w for w in words if w]
+
+# End code from django-tagging ------------------------------------------------
+
 def generate_unique_slug(text, queryset, slug_field='slug', iteration=0):
     """Generate a unique slug for a model from the provided text."""
     slug = slugify(text)
@@ -29,33 +116,53 @@ def generate_unique_slug(text, queryset, slug_field='slug', iteration=0):
         return generate_unique_slug(text, queryset=queryset,
                                     slug_field=slug_field, iteration=iteration)
 
+
+class TagDuplicator(object):
+
+    def __init__(self, orm):
+        self.orm = orm
+
+    def duplicate_tags(self, obj):
+        # Get the names of the obj's `django-tagging` tags.
+        tag_names = parse_tag_input(obj.tags)
+
+        # For each django-tagging tag which doesn't already have django-taggit
+        # equivalent, create one.
+        for name in tag_names:
+            tag = self.get_or_create_taggit_tag(name)
+            self.create_taggit_tagged_item(tag, obj)
+
+    def get_or_create_taggit_tag(self, name):
+        try:
+            # Get a taggit-tag with the given name.
+            tag = self.orm['taggit.Tag'].objects.get(name=name)
+        except self.orm['taggit.Tag'].DoesNotExist:
+            # If one doesn't already exist, create it, ensuring we don't
+            # conflict with the slugs of any exisiting taggit-tags.
+            queryset = self.orm['taggit.Tag'].objects.all()
+            slug = generate_unique_slug(name, queryset)
+            tag = self.orm['taggit.Tag'].objects.create(name=name, slug=slug)
+
+        return tag
+
+    def create_taggit_tagged_item(self, tag, obj):
+        obj_content_type = ContentType.objects.get_for_model(obj)
+        item = self.orm['taggit.TaggedItem'].objects.create(
+            tag=tag, content_type_id=obj_content_type.pk, object_id=obj.pk)
+
+
 class Migration(DataMigration):
 
     depends_on = (('taggit', '0002_unique_tagnames'),)
 
     def forwards(self, orm):
-        "Write your forwards methods here."
-        # Note: Don't use "from appname.models import ModelName". 
-        # Use orm.ModelName to refer to models in this application,
-        # and orm['appname.ModelName'] for models in other applications.
-        for tag in orm['tagging.Tag'].objects.all():
-            # Ensure we don't conflict with the slugs of any exisiting taggit-tags
-            queryset = orm['taggit.Tag'].objects.all()
-            slug = generate_unique_slug(tag.name, queryset)
-            new_tag = orm['taggit.Tag'].objects.create(name=tag.name,
-                                                       slug=slug)
+        duplicator = TagDuplicator(orm)
 
-        for tagged_item in orm['tagging.TaggedItem'].objects.all():
-            taggit_tag = orm['taggit.Tag'].objects.get(name=tagged_item.tag.name)
-            new_item = orm['taggit.TaggedItem'].objects.create(
-                tag=taggit_tag,
-                content_type=tagged_item.content_type,
-                object_id=tagged_item.object_id)
+        for page in orm.Page.objects.all():
+            duplicator.duplicate_tags(page)
 
     def backwards(self, orm):
-        "Write your backwards methods here."
-        orm['taggit.Tag'].objects.all().delete()
-        orm['taggit.TaggedItem'].objects.all().delete()
+        pass
 
     models = {
         u'auth.group': {
