@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from django.views.decorators.csrf import csrf_protect
+from django.views.generic import DetailView
 from thecut.pages.models import Page
-
-try:
-    from django.views.generic import DetailView
-except ImportError:
-    # Pre-Django 1.3 compatibility
-    from cbv.views import DetailView
 
 
 class DetailView(DetailView):
 
     context_object_name = 'page'
+
     slug_field = 'url'
+
     template_name_field = 'template'
 
     def get_queryset(self):
