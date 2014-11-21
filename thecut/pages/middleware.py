@@ -17,7 +17,7 @@ class PageMiddleware(object):
         # is a middleware, we can't assume the errors will be caught elsewhere.
         except Http404:
             return response
-        except:
+        except Exception:
             if settings.DEBUG:
                 raise
             return response

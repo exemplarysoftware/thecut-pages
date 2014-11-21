@@ -1,96 +1,55 @@
-# encoding: utf-8
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
-from thecut.authorship.settings import AUTH_USER_MODEL
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-class Migration(SchemaMigration):
-
-    def forwards(self, orm):
-
-        # Adding model 'Page'
-        db.create_table('pages_page', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('headline', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('content', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('publish_at', self.gf('django.db.models.fields.DateTimeField')()),
-            ('is_enabled', self.gf('django.db.models.fields.BooleanField')(default=True, blank=True)),
-            ('is_indexable', self.gf('django.db.models.fields.BooleanField')(default=True, blank=True)),
-            ('meta_description', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='page_created_by_user', to=orm[AUTH_USER_MODEL])),
-            ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('updated_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='page_updated_by_user', to=orm[AUTH_USER_MODEL])),
-            ('site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['sites.Site'])),
-            ('url', self.gf('django.db.models.fields.CharField')(max_length=100, db_index=True)),
-            ('template', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-        ))
-        db.send_create_signal('pages', ['Page'])
-
-        # Adding unique constraint on 'Page', fields ['url', 'site']
-        db.create_unique('pages_page', ['url', 'site_id'])
+from django.db import models, migrations
+import django.utils.timezone
+from django.conf import settings
+import taggit.managers
+import thecut.publishing.models
 
 
-    def backwards(self, orm):
+class Migration(migrations.Migration):
 
-        # Removing unique constraint on 'Page', fields ['url', 'site']
-        db.delete_unique('pages_page', ['url', 'site_id'])
+    dependencies = [
+        ('taggit', '0001_initial'),
+        ('sites', '0001_initial'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
 
-        # Deleting model 'Page'
-        db.delete_table('pages_page')
-
-
-    models = {
-        'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'blank': 'True'})
-        },
-        'auth.permission': {
-            'Meta': {'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        AUTH_USER_MODEL: {
-            'Meta': {'object_name': AUTH_USER_MODEL.split('.')[-1]},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
-        },
-        'contenttypes.contenttype': {
-            'Meta': {'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'pages.page': {
-            'Meta': {'unique_together': "(['url', 'site'],)", 'object_name': 'Page'},
-            'content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_created_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
-            'headline': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'blank': 'True'}),
-            'is_indexable': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'blank': 'True'}),
-            'meta_description': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'publish_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['sites.Site']"}),
-            'template': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'page_updated_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
-            'url': ('django.db.models.fields.CharField', [], {'max_length': '100', 'db_index': 'True'})
-        },
-        'sites.site': {
-            'Meta': {'object_name': 'Site', 'db_table': "'django_site'"},
-            'domain': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        }
-    }
-
-    complete_apps = ['pages']
+    operations = [
+        migrations.CreateModel(
+            name='Page',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('is_enabled', models.BooleanField(default=True, db_index=True, verbose_name='enabled')),
+                ('is_featured', models.BooleanField(default=False, db_index=True, verbose_name='featured')),
+                ('publish_at', models.DateTimeField(default=django.utils.timezone.now, help_text='This item will only be viewable on the website if it is enabled, and this date and time has past.', verbose_name='publish date & time', db_index=True)),
+                ('expire_at', models.DateTimeField(help_text='This item will no longer be viewable on the website if this date and time has past. Leave blank if you do not wish this item to expire.', null=True, verbose_name='expiry date & time', db_index=True, blank=True)),
+                ('title', models.CharField(max_length=200)),
+                ('headline', models.CharField(default='', max_length=200, blank=True)),
+                ('content', models.TextField(default='', blank=True)),
+                ('featured_content', models.TextField(default='', blank=True)),
+                ('is_indexable', models.BooleanField(default=True, help_text='Should this page be indexed by search engines?', db_index=True, verbose_name='indexable')),
+                ('meta_description', models.CharField(default='', help_text='Optional short description for use by search engines.', max_length=200, blank=True)),
+                ('template', models.CharField(default='', help_text='Example: "app/model_detail.html".', max_length=100, blank=True)),
+                ('url', models.CharField(help_text='Example: /my-page', max_length=100, db_index=True)),
+                ('created_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
+                ('publish_by', models.ForeignKey(related_name='+', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('site', models.ForeignKey(default=thecut.publishing.models.get_current_site, to='sites.Site')),
+                ('tags', taggit.managers.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='A comma-separated list of tags.', verbose_name='Tags')),
+                ('updated_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'ordering': ('title',),
+                'abstract': False,
+                'get_latest_by': 'publish_at',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AlterUniqueTogether(
+            name='page',
+            unique_together=set([('url', 'site')]),
+        ),
+    ]
