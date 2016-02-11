@@ -8,7 +8,7 @@ from thecut.publishing.models import SiteContent
 class AbstractPage(SiteContent):
     """Generic page."""
 
-    url = models.CharField(max_length=100, db_index=True,
+    url = models.CharField('URL', max_length=100, db_index=True,
                            help_text='Example: /my-page')
 
     class Meta(SiteContent.Meta):
