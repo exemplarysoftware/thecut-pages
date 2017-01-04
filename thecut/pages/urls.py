@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from django.conf.urls import include, patterns, url
+from django.conf.urls import include, url
 from thecut.pages import views
 
 
-urls = patterns(
-    'thecut.pages.views',
-
+urls = [
     url(r'^(?P<slug>[\w/-]+)$', views.DetailView.as_view(),
         name='page_detail'),
+]
 
-)
-
-urlpatterns = patterns('', (r'^', include(urls, namespace='pages')))
+urlpatterns = [include(urls, namespace='pages')]
