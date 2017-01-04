@@ -4,9 +4,12 @@ from django.conf.urls import include, url
 from thecut.pages import views
 
 
-urls = [
+app_name = 'pages'
+
+
+urlpatterns = [
     url(r'^(?P<slug>[\w/-]+)$', views.DetailView.as_view(),
         name='page_detail'),
 ]
 
-urlpatterns = [include(urls, namespace='pages')]
+
