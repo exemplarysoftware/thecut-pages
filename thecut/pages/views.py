@@ -16,7 +16,7 @@ class DetailView(DetailView):
 
     def get_queryset(self):
         url = self.kwargs.get('slug', None)
-        print("DetailView get_queryset url=", url)
+        #print("DetailView get_queryset url=", url)
         return Page.objects.current_site().active().filter(Q(url=url)|
                                                            Q(url='/' + url))
 
