@@ -44,7 +44,7 @@ You can use ``virtualenv`` to test without polluting your system's Python enviro
     (thecut-pages) $ python runtests.py
 
 7. Run the tests with coverage
-    coverage run --branch --omit=lib/*,/home/mark/thecut-publishing/*,/home/mark/thecut-authorship/*,thecut/pages/migrations/*,thecut/pages/south_migrations/* runtests.py
+    coverage run --branch --omit=lib/*,~/thecut-publishing/*,~/thecut-authorship/*,thecut/pages/migrations/*,thecut/pages/south_migrations/* runtests.py
     coverage report -m
 
 Using tox
