@@ -18,11 +18,14 @@ try:
             "django.contrib.contenttypes",
             "django.contrib.sites",
             "taggit",
+            'sorl.thumbnail',
             "thecut.pages",
             "test_app",
         ],
         SITE_ID=1,
-        MIDDLEWARE_CLASSES=(),
+        MIDDLEWARE_CLASSES=[
+            'thecut.pages.middleware.PageMiddleware',
+            ],
         TEMPLATES=[
             {
                 'BACKEND': 'django.template.backends.django.DjangoTemplates',
