@@ -23,12 +23,7 @@ class TestDetailView(TestCase):
     def test_getting_page(self):
         PageFactory(title='Hello world', url='/hello')
 
-        #request_factory = RequestFactory()
-        #request = request_factory.get('/hello')
-        #response = page_view(request, '/hello')
-        #self.assertEqual(response.context_data['page'].title, 'Hello world')
-
         request_factory = RequestFactory()
-        request = request_factory.get('hello')
-        response = page_view(request, 'hello')
+        request = request_factory.get('/hello')
+        response = page_view(request, '/hello')
         self.assertEqual(response.context_data['page'].title, 'Hello world')
