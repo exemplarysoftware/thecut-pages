@@ -8,6 +8,8 @@ class Command(BaseCommand):
     args = '[create]'
 
     def add_arguments(self, parser):
+        parser.add_argument('create')
+
         parser.add_argument('--quantity',
                             action='store',
                             type=int,
