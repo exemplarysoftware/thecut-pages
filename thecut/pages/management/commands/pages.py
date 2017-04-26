@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from django.core.management.base import BaseCommand, CommandError
-from optparse import make_option
 
 
 class Command(BaseCommand):
 
     args = '[create]'
 
-    option_list = BaseCommand.option_list + (
-        make_option('--quantity',
-            action='store',
-            type='int',
-            dest='quantity',
-            default=1,
-            help='Number of instances to create'),
-        )
+    def add_arguments(self, parser):
+        parser.add_argument('--quantity',
+                            action='store',
+                            type='int',
+                            dest='quantity',
+                            default=1,
+                            help='Number of instances to create'),
 
     help = 'create: Create page(s) with fake data'
 
@@ -33,4 +31,4 @@ class Command(BaseCommand):
             try:
                 self.stdout.write(output)
             except AttributeError:
-                print output
+                print(output)
