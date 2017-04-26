@@ -10,7 +10,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--quantity',
                             action='store',
-                            type='int',
+                            type=int,
                             dest='quantity',
                             default=1,
                             help='Number of instances to create'),
