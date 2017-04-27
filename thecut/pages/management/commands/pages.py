@@ -8,8 +8,6 @@ class Command(BaseCommand):
     args = '[create]'
 
     def add_arguments(self, parser):
-        parser.add_argument('create')
-
         parser.add_argument('--quantity',
                             action='store',
                             type=int,
@@ -19,7 +17,12 @@ class Command(BaseCommand):
 
     help = 'create: Create page(s) with fake data'
 
-    def handle(self, command, *args, **options):
+    def handle(self, *args, **options):
+
+        if not args:
+            raise CommandError('No command')
+
+        command = args[0]
 
         if command not in ['create']:
             raise CommandError('"{0}" is not a valid argument'.format(command))
