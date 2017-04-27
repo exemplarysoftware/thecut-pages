@@ -8,6 +8,8 @@ class Command(BaseCommand):
     args = '[create]'
 
     def add_arguments(self, parser):
+        parser.add_argument('command')
+
         parser.add_argument('--quantity',
                             action='store',
                             type=int,
@@ -19,10 +21,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        if not args:
+        if 'command' not in options:
             raise CommandError('No command')
 
-        command = args[0]
+        command = options['command']
 
         if command not in ['create']:
             raise CommandError('"{0}" is not a valid argument'.format(command))
