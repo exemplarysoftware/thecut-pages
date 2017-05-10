@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
-from django.db import models, migrations
-import django.utils.timezone
 from django.conf import settings
+from django.db import models, migrations
+import django.db.models.deletion
+import django.utils.timezone
 import taggit.managers
 import thecut.publishing.models
 
@@ -35,11 +35,11 @@ class Migration(migrations.Migration):
                 ('meta_description', models.CharField(default='', help_text='Optional short description for use by search engines.', max_length=200, blank=True)),
                 ('template', models.CharField(default='', help_text='Example: "app/model_detail.html".', max_length=100, blank=True)),
                 ('url', models.CharField(help_text='Example: /my-page', max_length=100, db_index=True)),
-                ('created_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
-                ('publish_by', models.ForeignKey(related_name='+', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
-                ('site', models.ForeignKey(default=thecut.publishing.models.get_current_site, to='sites.Site')),
+                ('created_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
+                ('publish_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('site', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, default=thecut.publishing.models.get_current_site, to='sites.Site')),
                 ('tags', taggit.managers.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='A comma-separated list of tags.', verbose_name='Tags')),
-                ('updated_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
+                ('updated_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ('title',),
