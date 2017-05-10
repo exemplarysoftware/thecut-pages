@@ -5,7 +5,13 @@ from django.http import Http404
 from thecut.pages.views import page
 
 
-class PageMiddleware(object):
+try:
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:  # Django < 1.10
+    MiddlewareMixin = object
+
+
+class PageMiddleware(MiddlewareMixin):
     # Adapted from the Django FlatpageFallbackMiddleware
 
     def process_response(self, request, response):

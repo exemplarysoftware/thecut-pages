@@ -1,35 +1,20 @@
 {% extends "pages/base.html" %}
-{% load thumbnail %}
+
 
 {% block title %}{{ page.title }} - {{ block.super }}{% endblock %}
 
+
 {% block extrahead %}
   {{ block.super }}
-  {% if not page.is_indexable %}<meta name="robots" content="noindex" />{% endif %}
+  {% if page and not page.is_indexable %}<meta name="robots" content="noindex" />{% endif %}
   {% if page.meta_description %}<meta name="description" content="{{ page.meta_description }}" />{% endif %}
 {% endblock %}
 
+
 {% block content %}
-  
+
   <h1>{{ page.heading }}</h1>
   {% if page.featured_content %}<div>{{ page.featured_content|safe }}</div>{% endif %}
   {% if page.content %}<div>{{ page.content|safe }}</div>{% endif %}
-  
-  {% spaceless %}{% for image in page.media.images %}
-    {% if forloop.first %}<h2>Images</h2><ul>{% endif %}
-    {% thumbnail image.get_image "200x200" as thumb %}
-    <li><a href="{{ image.get_absolute_url }}"><img src="{{ thumb.url }}" alt="{{ image }}" /></a></li>
-    {% endthumbnail %}
-    {% if forloop.last %}</ul>{% endif %}
-  {% endfor %}{% endspaceless %}
-  
-  {% spaceless %}{% for document in page.media.documents %}
-    {% if forloop.first %}<h2>Documents</h2><ul>{% endif %}
-    {% thumbnail document.get_image "200x200" as thumb %}
-    <li><a href="{{ document.get_absolute_url }}"><img src="{{ thumb.url }}" alt="{{ document }}" /></a></li>
-    {% endthumbnail %}
-    {% if forloop.last %}</ul>{% endif %}
-  {% endfor %}{% endspaceless %}
-  
-{% endblock %}
 
+{% endblock %}
