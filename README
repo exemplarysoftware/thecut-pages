@@ -13,18 +13,17 @@ To install this application (whilst in the project's activated virtualenv)::
 
 Add the ``thecut.pages`` to the project's ``INSTALLED_APPS`` setting::
 
-    INSTALLED_APPS = (
+    INSTALLED_APPS = [
         ...
         'thecut.pages',
-    )
+    ]
 
 
 Add the ``thecut.pages.middleware.PageMiddleware`` to the end (but before any
-``RedirectFallbackMiddleware``) of the project's ``MIDDLEWARE_CLASSES``
-setting::
+``RedirectFallbackMiddleware``) of the project's ``MIDDLEWARE`` setting::
 
-    MIDDLEWARE_CLASSES = (
+    MIDDLEWARE = [
         ...
         'thecut.pages.middleware.PageMiddleware',
         'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
-    )
+    ]
