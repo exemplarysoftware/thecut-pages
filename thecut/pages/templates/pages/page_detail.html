@@ -14,7 +14,7 @@
 {% block content %}
 
   <h1>{{ page.heading }}</h1>
-  {% if page.featured_content %}<div>{{ page.featured_content|safe }}</div>{% endif %}
-  {% if page.content %}<div>{{ page.content|safe }}</div>{% endif %}
+  {% if page.featured_content %}<div>{{ page.featured_content }}</div>{% endif %}
+  {% if page.content %}<div>{{ page.content }}</div>{% endif %}
 
 {% endblock %}
